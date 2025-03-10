@@ -1,0 +1,3 @@
+${PODS_ROOT}/Target Support Files/Pods-PoliSDK_Example/Pods-PoliSDK_Example-frameworks.sh
+${BUILT_PRODUCTS_DIR}/HCBle/HCBle.framework
+${BUILT_PRODUCTS_DIR}/PoliSDK/PoliSDK.framework

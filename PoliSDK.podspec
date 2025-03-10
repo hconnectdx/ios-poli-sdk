@@ -1,42 +1,27 @@
-#
-# Be sure to run `pod lib lint PoliSDK.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
-  s.name             = 'PoliSDK'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of PoliSDK.'
+  # 변수 설정
+  token = ENV['GIT_ACCESS_TOKEN']
+  name = 'PoliSDK'
+  version = '0.1.4'
+  description = 'This is a ios PoliSDK'
+  repo_url = 'https://github.com/hconnectdx/bt-sdk-ios'
+  
+  s.name             = name
+  s.version          = version
+  s.summary          = description
 
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
-  s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
-
-  s.homepage         = 'https://github.com/x-oauth-basic/PoliSDK'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.description      = description
+  s.homepage         = repo_url
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'x-oauth-basic' => 'kmwdev@hconnect.co.kr' }
-  s.source           = { :git => 'https://github.com/x-oauth-basic/PoliSDK.git', :tag => s.version.to_s }
+  s.source           = { :git => "https://oauth2:#{token}@github.com/hconnectdx/bt-sdk-ios.git", :tag => version }
+  
+  # s.screenshots    = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '10.0'
 
-  s.source_files = 'PoliSDK/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'PoliSDK' => ['PoliSDK/Assets/*.png']
-  # }
+  s.source_files = 'PoliSDK/Classes/**/*', 'Classes/**/*.swift'
+  s.dependency 'HCBle', '~> 0.1.3'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end

@@ -1,0 +1,28 @@
+PODS:
+  - HCBle (0.1.3)
+  - Nimble (10.0.0)
+  - PoliSDK (0.1.0):
+    - HCBle (~> 0.1.3)
+
+DEPENDENCIES:
+  - Nimble (~> 10.0.0)
+  - PoliSDK (from `../`)
+
+SPEC REPOS:
+  https://github.com/hconnectdx/ios-specs.git:
+    - HCBle
+  trunk:
+    - Nimble
+
+EXTERNAL SOURCES:
+  PoliSDK:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  HCBle: 4783b678ca833b225d028af40d1baf98994a571d
+  Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
+  PoliSDK: ebf9b7fd4668fb3d677d6baef8da182d54a33fbf
+
+PODFILE CHECKSUM: 71f7cab04c896a2958599130e9ba8ff5bed0f655
+
+COCOAPODS: 1.16.2
