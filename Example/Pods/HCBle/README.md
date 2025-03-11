@@ -1,29 +1,51 @@
 # HCBle
 
-[![CI Status](https://img.shields.io/travis/x-oauth-basic/HCBle.svg?style=flat)](https://travis-ci.org/x-oauth-basic/HCBle)
-[![Version](https://img.shields.io/cocoapods/v/HCBle.svg?style=flat)](https://cocoapods.org/pods/HCBle)
-[![License](https://img.shields.io/cocoapods/l/HCBle.svg?style=flat)](https://cocoapods.org/pods/HCBle)
-[![Platform](https://img.shields.io/cocoapods/p/HCBle.svg?style=flat)](https://cocoapods.org/pods/HCBle)
+HCBle는 iOS 애플리케이션에서 BLE(Bluetooth Low Energy) 기능을 간편하게 통합할 수 있도록 지원하는 라이브러리입니다.
 
-## Example
+## 📌 요구 사항
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+- **iOS 버전**: 최소 iOS 12 이상
+- **Xcode 버전**: Xcode 14 이상 권장
+- **Swift 버전**: Swift 5 이상
 
-## Requirements
+## 🔧 설치 방법
 
-## Installation
+### 1. CocoaPods 설정
 
-HCBle is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+HCBle을 설치하려면 먼저 CocoaPods이 필요합니다. 아래 명령어를 실행하여 CocoaPods을 설치하세요.
 
-```ruby
-pod 'HCBle'
+```bash
+sudo gem install cocoapods
 ```
 
-## Author
+### 2. 프로젝트에 HCBle 추가
 
-x-oauth-basic, kmwdev@hconnect.co.kr
+#### 1) GitHub 액세스 토큰 설정
 
-## License
+먼저 GitHub 액세스 토큰을 설정해야 합니다. bashrc나 zshrc 파일에 유효한 토큰을 설정하세요
 
-HCBle is available under the MIT license. See the LICENSE file for more info.
+```bash
+export GIT_ACCESS_TOKEN=ghp_qRZY..
+```
+
+#### 2) Podfile 설정
+
+프로젝트의 `Podfile`을 열고 다음 내용을 추가하세요.
+
+```ruby
+source 'https://github.com/hconnectdx/ios-specs.git'
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'YourAppTarget' do
+  use_frameworks!
+  pod 'HCBle', '~> 0.1.3'
+end
+```
+
+#### 3) Pod 설치
+
+아래 명령어를 실행하여 Pod을 설치합니다.
+
+```bash
+pod install
+```

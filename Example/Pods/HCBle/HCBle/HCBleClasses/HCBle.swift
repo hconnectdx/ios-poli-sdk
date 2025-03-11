@@ -229,8 +229,8 @@ extension HCBle: CBPeripheralDelegate {
         let byteString = byteArray.map { String(format: "%02x", $0) }.joined(separator: " ")
         print("Received size: \(data)")
         print("Received bytes: \(byteString)")
+        print("")
 
-        print(onReceiveSubscribtionData)
         onReceiveSubscribtionData?(data)
     }
 
