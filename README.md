@@ -1,7 +1,5 @@
 # PoliSDK
 
-HCBle는 iOS 애플리케이션에서 BLE(Bluetooth Low Energy) 기능을 간편하게 통합할 수 있도록 지원하는 라이브러리입니다.
-
 ## 📌 요구 사항
 
 - **iOS 버전**: 최소 iOS 12 이상
