@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
   # 변수 설정
   token = ENV['GIT_ACCESS_TOKEN']
   name = 'PoliSDK'
-  version = '0.1.0'
+  version = '0.1.1'
   description = 'This is a ios PoliSDK'
   repo_url = 'https://github.com/hconnectdx/ios-poli-sdk'
   
