@@ -28,7 +28,7 @@ public class PoliAPI {
         }
     }
     
-    private var _userSno: Int = 0
+    private var _userSno: Int = 998
     public var userSno: Int {
         get {
             return _userSno

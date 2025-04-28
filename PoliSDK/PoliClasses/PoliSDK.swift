@@ -137,16 +137,34 @@ public class PoliBLE {
                     onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_START, nil)
                 }
                 DailyProtocol02API.shared.preByte = dataOrder
-        
                 let removedHeaderData = DailyProtocol02API.shared.removeFrontBytes(data: data, size: 2)
-                DailyProtocol02API.shared.addDaily02Byte(data: removedHeaderData)
                 
-                if dataOrder == 0xff {
-                    DailyProtocol02API.shared.request { response in
-                        print("DailyProtocol02API response: \(response)")
-                        onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2, response)
+                let isLast = dataOrder == 0xff
+                
+                DailyProtocol02API.shared.addDaily02ByteNew(data: removedHeaderData, isLast: isLast)
+                
+                if isLast {
+                    let byteSize = DailyProtocol02API.shared.getCurrentByteArraySize()
+                    print("Protocol02 ByteArray size: \(byteSize)")
+                    
+                    if byteSize == 192_000 {
+                        // 데이터를 bin 파일로 저장 (디버깅/분석용)
+                        let filePath = DailyProtocol02API.shared.saveToFile()
+                        print("Protocol02 데이터가 파일로 저장되었습니다: \(filePath)")
+                        
+                        DailyProtocol02API.shared.request(completion: { response in
+                            print("DailyProtocol02API response: \(response)")
+                            onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2, response)
+                        }, saveToFile: false) // 이미 위에서 저장했으므로 false로 설정
+                    } else {
+                        print("[Error] Protocol02 has insufficient data: \(byteSize) bytes")
+                        onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_ERROR_LACK_OF_DATA, nil)
                     }
+                    
+                    // Reset data after processing
+                    DailyProtocol02API.shared.preByte = 0x00
                 }
+        
             case 0x03:
                 do {
                     let hrSpO2Data = try DailyProtocol03API.shared.asciiToHRSpO2(data: data)

@@ -3,7 +3,30 @@ class DailyProtocol02API: ProtocolHandlerUtil {
     public var preByte: UInt8 = 0x00
     override private init() {}
     
-    func request(completion: @escaping (DailyProtocol02Response) -> Void) {
+    // Get current byte array size for validation
+    func getCurrentByteArraySize() -> Int {
+        return getDaily02ByteArraySize()
+    }
+    
+    // Reset data without returning it
+    func resetData() {
+        clearDaily02ByteArray()
+    }
+    
+    // Save current Protocol02 data to a bin file
+    func saveToFile(fileName: String? = nil) -> String {
+        let actualFileName = fileName ?? "protocol02_\(DateUtil.getCurrentDateTime()).bin"
+        let filePath = saveDaily02DataToFile(fileName: actualFileName)
+        return filePath
+    }
+    
+    func request(completion: @escaping (DailyProtocol02Response) -> Void, saveToFile: Bool = false) {
+        // 파일로 저장 (옵션)
+        if saveToFile {
+            let filePath = self.saveToFile()
+            print("Protocol02 데이터가 파일로 저장되었습니다: \(filePath)")
+        }
+        
         let requestBody: [String: Any] = [
             "reqDate": Date().currentTimeString(),
             "userSno": PoliAPI.shared.userSno,
