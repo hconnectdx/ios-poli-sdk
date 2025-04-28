@@ -42,13 +42,6 @@ public class HCBle: NSObject {
             print("Central Manager is not initialized")
             return
         }
-
-        if centralManager.state == .poweredOn {
-            centralManager.scanForPeripherals(withServices: nil, options: nil)
-            print("Scanning for peripherals...")
-        } else {
-            print("Bluetooth is not powered on")
-        }
     }
 
     public func connect(
@@ -277,6 +270,13 @@ extension HCBle: CBCentralManagerDelegate {
                 print("Bluetooth state is unknown")
             @unknown default:
                 print("A new state is available that is not handled")
+        }
+
+        if centralManager?.state == .poweredOn {
+            centralManager?.scanForPeripherals(withServices: nil, options: nil)
+            print("Scanning for peripherals...")
+        } else {
+            print("Bluetooth is not powered on")
         }
     }
 
