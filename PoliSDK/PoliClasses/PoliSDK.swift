@@ -23,7 +23,7 @@ public class PoliBLE {
     
     /// 블루투스 스캔 중지
     public func stopScan() {
-        // TODO:
+        HCBle.shared.stopScan()
     }
     
     /// 특정 기기에 연결
