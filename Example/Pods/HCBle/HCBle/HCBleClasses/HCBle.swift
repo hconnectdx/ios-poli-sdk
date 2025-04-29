@@ -282,7 +282,8 @@ extension HCBle: CBCentralManagerDelegate {
         }
 
         if centralManager?.state == .poweredOn {
-            centralManager?.scanForPeripherals(withServices: nil, options: nil)
+            centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+
             print("Scanning for peripherals...")
         } else {
             print("Bluetooth is not powered on")

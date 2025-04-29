@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
   # 변수 설정
   token = ENV['GIT_ACCESS_TOKEN']
   name = 'PoliSDK'
-  version = '1.0.0'
+  version = '1.0.1'
   description = 'This is a ios PoliSDK'
   repo_url = 'https://github.com/hconnectdx/ios-poli-sdk'
   
@@ -22,6 +22,9 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '10.0'
 
   s.source_files = 'PoliSDK/PoliClasses/**/*'
-  s.dependency 'HCBle', '~> 0.1.7'
+  s.dependency 'HCBle', '~> 0.1.8'
 
 end
+
+# 배포 명령어
+# pod repo push hconnectdx-ios-spec PoliSDK.podspec --sources='https://github.com/hconnectdx/ios-spec.git' --allow-warnings
