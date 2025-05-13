@@ -8,11 +8,11 @@ public struct LTMModel: Codable, Equatable {
     
     // Lux 구조체
     public struct Lux: Codable, Equatable {
-        let lux: Int
-        var time: String?
+        public let lux: Int
+        public var time: String?
         
         // 간편 초기화를 위한 생성자
-        init(value: Int, time: String? = nil) {
+        public init(value: Int, time: String? = nil) {
             self.lux = value
             self.time = time
         }
@@ -20,11 +20,11 @@ public struct LTMModel: Codable, Equatable {
     
     // SkinTemp 구조체
     public struct SkinTemp: Codable, Equatable {
-        let skinTemp: Float
-        var time: String?
+        public let skinTemp: Float
+        public var time: String?
         
         // 간편 초기화를 위한 생성자
-        init(value: Float, time: String? = nil) {
+        public init(value: Float, time: String? = nil) {
             self.skinTemp = value
             self.time = time
         }
@@ -32,11 +32,11 @@ public struct LTMModel: Codable, Equatable {
     
     // Mets 구조체
     public struct Mets: Codable, Equatable {
-        let mets: Int
-        var time: String?
+        public let mets: Int
+        public var time: String?
         
         // 간편 초기화를 위한 생성자
-        init(value: Int, time: String? = nil) {
+        public init(value: Int, time: String? = nil) {
             self.mets = value
             self.time = time
         }
