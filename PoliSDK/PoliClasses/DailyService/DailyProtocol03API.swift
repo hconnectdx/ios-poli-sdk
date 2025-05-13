@@ -7,7 +7,7 @@ class DailyProtocol03API: ProtocolHandlerUtil {
         * - Parameters:
         *   - data: [oxygenVal: Int, heartRateVal: Int]
      */
-    func request(data: [String: Any], completion: @escaping (DailyResponse) -> Void) {
+    func request(data: [String: Any], completion: @escaping (DailyProtocol03Response) -> Void) {
         let request: [String: Any] = [
             "reqDate": Date().currentTimeString(),
             "userSno": PoliAPI.shared.userSno,
@@ -21,7 +21,7 @@ class DailyProtocol03API: ProtocolHandlerUtil {
             body: request)
         { result in
             do {
-                let response = try DailyResponse.convertToDailyResponse(from: result)
+                let response = try DailyProtocol03Response.convertToDailyResponse(from: result)
                 completion(response)
             } catch {
                 print("[Error] Failed to parse DailyResponse\(error)")

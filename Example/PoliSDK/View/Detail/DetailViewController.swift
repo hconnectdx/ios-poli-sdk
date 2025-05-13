@@ -81,7 +81,83 @@ class DetailViewController: UIViewController {
 
                     onReceiveSubscribtionData: { type, data in
                         print("protocol type: \(type)")
-                        print("onReceive Data: \(data)")
+                        print("onReceive Data: \(String(describing: data))")
+
+                        switch type {
+                            case .PROTOCOL_1:
+                                print("Received Protocol 01 Data")
+                                let response: DailyProtocol01Response = data as! DailyProtocol01Response
+                                print("Data: \(String(describing: response.data))")
+                                print("lux: \(String(describing: response.data?.ltmModel.lux))")
+                                print("mets: \(String(describing: response.data?.ltmModel.mets))")
+                                print("skinTemp: \(String(describing: response.data?.ltmModel.skinTemp))")
+
+                            case .PROTOCOL_2:
+                                print("Received Protocol 02 Data")
+                                let response: DailyProtocol02Response = data as! DailyProtocol02Response
+                                print("userSystolic: \(String(describing: response.data?.userSystolic))")
+                                print("userDiastolic: \(String(describing: response.data?.userDiastolic))")
+                                print("userStress: \(String(describing: response.data?.userStress))")
+                                print("userHighGlucose: \(String(describing: response.data?.userHighGlucose))")
+                            case .PROTOCOL_3:
+                                print("Received Protocol 03 Data")
+                                let response: DailyProtocol03Response = data as! DailyProtocol03Response
+                                print("heartRate: \(String(describing: response.data?.hrSpO2.heartRate))")
+                                print("spo2: \(String(describing: response.data?.hrSpO2.spo2))")
+
+                            case .PROTOCOL_1_ERROR:
+                                print("Received Protocol 01 Error Data")
+
+                            case .PROTOCOL_2_ERROR_LACK_OF_DATA:
+                                print("Received Protocol 02 Error Data")
+
+                            case .PROTOCOL_2_ERROR:
+                                print("Received Protocol 02 Error Data")
+
+                            case .PROTOCOL_2_START:
+                                print("Received Protocol 02 Start Data")
+
+                            case .PROTOCOL_3_ERROR:
+                                print("Received Protocol 03 Error Data")
+
+                            case .PROTOCOL_4_SLEEP_START:
+                                print("Received Protocol 04 Sleep Start Data")
+
+                            case .PROTOCOL_4_SLEEP_START_ERROR:
+                                print("Received Protocol 04 Sleep Start Error Data")
+
+                            case .PROTOCOL_5_SLEEP_END:
+                                print("Received Protocol 05 Sleep End Data")
+                                let response: SleepStopResponse = data as! SleepStopResponse
+                                print("sleepQuality: \(String(describing: response.data?.sleepQuality))")
+
+                            case .PROTOCOL_5_SLEEP_END_ERROR:
+                                print("Received Protocol 05 Sleep End Error Data")
+
+                            case .PROTOCOL_6:
+                                print("Received Protocol 06 Data")
+
+                            case .PROTOCOL_6_ERROR:
+                                print("Received Protocol 06 Error Data")
+
+                            case .PROTOCOL_7:
+                                print("Received Protocol 07 Data")
+
+                            case .PROTOCOL_7_ERROR:
+                                print("Received Protocol 07 Error Data")
+
+                            case .PROTOCOL_8:
+                                print("Received Protocol 08 Data")
+
+                            case .PROTOCOL_8_ERROR:
+                                print("Received Protocol 08 Error Data")
+
+                            case .PROTOCOL_9:
+                                print("Received Protocol 09 Data")
+
+                            case .PROTOCOL_9_ERROR:
+                                print("Received Protocol 09 Error Data")
+                        }
                     }
                 )
             }

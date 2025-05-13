@@ -1,13 +1,13 @@
 import Foundation
 
 // LTMModel 구조체 정의
-struct LTMModel: Codable, Equatable {
-    let lux: [Lux]
-    let skinTemp: [SkinTemp]
-    let mets: [Mets]
+public struct LTMModel: Codable, Equatable {
+    public let lux: [Lux]
+    public let skinTemp: [SkinTemp]
+    public let mets: [Mets]
     
     // Lux 구조체
-    struct Lux: Codable, Equatable {
+    public struct Lux: Codable, Equatable {
         let lux: Int
         var time: String?
         
@@ -19,7 +19,7 @@ struct LTMModel: Codable, Equatable {
     }
     
     // SkinTemp 구조체
-    struct SkinTemp: Codable, Equatable {
+    public struct SkinTemp: Codable, Equatable {
         let skinTemp: Float
         var time: String?
         
@@ -31,7 +31,7 @@ struct LTMModel: Codable, Equatable {
     }
     
     // Mets 구조체
-    struct Mets: Codable, Equatable {
+    public struct Mets: Codable, Equatable {
         let mets: Int
         var time: String?
         
@@ -43,7 +43,7 @@ struct LTMModel: Codable, Equatable {
     }
     
     // 문자열 표현 메서드 (JSON 형식)
-    func toString() -> String {
+    public func toString() -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted]
         
@@ -60,7 +60,7 @@ struct LTMModel: Codable, Equatable {
     }
     
     // Dictionary로 변환하는 함수
-    func toDictionary() -> [String: Any] {
+    public func toDictionary() -> [String: Any] {
         let luxDicts = lux.map { $0.toDictionary() }
         let skinTempDicts = skinTemp.map { $0.toDictionary() }
         let metsDicts = mets.map { $0.toDictionary() }
@@ -73,7 +73,7 @@ struct LTMModel: Codable, Equatable {
     }
     
     // Dictionary에서 LTMModel 생성하는 정적 함수
-    static func fromDictionary(_ dict: [String: Any]) -> LTMModel? {
+    public static func fromDictionary(_ dict: [String: Any]) -> LTMModel? {
         guard let luxArray = dict["lux"] as? [[String: Any]],
               let skinTempArray = dict["skinTemp"] as? [[String: Any]],
               let metsArray = dict["mets"] as? [[String: Any]]

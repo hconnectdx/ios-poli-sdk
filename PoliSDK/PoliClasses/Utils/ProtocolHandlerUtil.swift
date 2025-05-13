@@ -25,7 +25,7 @@ open class ProtocolHandlerUtil {
         // 디버깅용: 들어오는 데이터 정보 출력
         print("▶️ addDaily02ByteNew 호출 - 데이터 크기: \(data.count) 바이트, isLast: \(isLast)")
         if data.count > 0 {
-            print("▶️ 첫 5바이트: \(data.prefix(min(5, data.count)).map { String(format: "%02X", $0) }.joined(separator: " "))")
+//            print("▶️ 첫 5바이트: \(data.prefix(min(5, data.count)).map { String(format: "%02X", $0) }.joined(separator: " "))")
         }
         
         // 상수 정의
@@ -72,15 +72,15 @@ open class ProtocolHandlerUtil {
             offsetValue = (Int(data[80]) & 0xFF) << 16 |
                 (Int(data[79]) & 0xFF) << 8 |
                 (Int(data[78]) & 0xFF)
-            print("[오프셋 계산 - Last] 바이트 값: [\(data[78]), \(data[79]), \(data[80])]")
+//            print("[오프셋 계산 - Last] 바이트 값: [\(data[78]), \(data[79]), \(data[80])]")
         } else if !isLast && data.count >= 237 {
             offsetValue = (Int(data[236]) & 0xFF) << 16 |
                 (Int(data[235]) & 0xFF) << 8 |
                 (Int(data[234]) & 0xFF)
-            print("[오프셋 계산 - Normal] 바이트 값: [\(data[234]), \(data[235]), \(data[236])]")
+//            print("[오프셋 계산 - Normal] 바이트 값: [\(data[234]), \(data[235]), \(data[236])]")
         }
         
-        print("계산된 오프셋 값: \(offsetValue) (0x\(String(offsetValue, radix: 16)), 이진수=\(String(offsetValue, radix: 2).padding(toLength: 24, withPad: "0", startingAt: 0)))")
+//        print("계산된 오프셋 값: \(offsetValue) (0x\(String(offsetValue, radix: 16)), 이진수=\(String(offsetValue, radix: 2).padding(toLength: 24, withPad: "0", startingAt: 0)))")
         
         // 디버깅용: 오프셋을 하드코딩으로 10000으로 설정
         // offsetValue = 10000
@@ -123,7 +123,7 @@ open class ProtocolHandlerUtil {
         }
         
         // 남은 비트가 있으면 마지막 청크 처리
-        if bitPosition > 0 && chunkIndex < maxChunks {
+        if bitPosition > 0, chunkIndex < maxChunks {
             processedChunks[chunkIndex] = processChunk(originalValue: currentValue, chunkIndex: chunkIndex, offsetValue: offsetValue)
         }
         
@@ -137,12 +137,12 @@ open class ProtocolHandlerUtil {
         if isEvenChunk {
             // 짝수 청크: 원래 값 + 오프셋
             finalValue = (originalValue + offsetValue) & 0xFFFFFFFF
-            print("[짝수 청크 계산] 원본값(\(originalValue)) + 오프셋(\(offsetValue)) = \(finalValue)")
+//            print("[짝수 청크 계산] 원본값(\(originalValue)) + 오프셋(\(offsetValue)) = \(finalValue)")
         } else {
             // 홀수 청크: 3비트 쉬프트 후 int16_t 변환 (16비트로 제한)
             // 부호 확장 방지를 위해 딱 16비트만 유지
             finalValue = (originalValue << 3) & 0xFFFF
-            print("[홀수 청크 계산] 원본값(\(originalValue)) << 3 = \(finalValue)")
+//            print("[홀수 청크 계산] 원본값(\(originalValue)) << 3 = \(finalValue)")
         }
         
         // 로그 출력
@@ -158,7 +158,7 @@ open class ProtocolHandlerUtil {
         let binaryOriginal = String(originalValue, radix: 2).padding(toLength: 13, withPad: "0", startingAt: 0)
         let binaryFinal = String(finalValue, radix: 2).padding(toLength: isEvenChunk ? 24 : 16, withPad: "0", startingAt: 0)
         
-        print("\(chunkType) Chunk[\(chunkIndex)]: 원래값=\(originalValue) (0x\(String(originalValue, radix: 16)), 이진수=\(binaryOriginal)), 최종값=\(finalValue) (0x\(String(finalValue, radix: 16)), 이진수=\(binaryFinal))")
+//        print("\(chunkType) Chunk[\(chunkIndex)]: 원래값=\(originalValue) (0x\(String(originalValue, radix: 16)), 이진수=\(binaryOriginal)), 최종값=\(finalValue) (0x\(String(finalValue, radix: 16)), 이진수=\(binaryFinal))")
     }
         
     /// 데이터를 반환하고 _byteArray를 비우는 함수

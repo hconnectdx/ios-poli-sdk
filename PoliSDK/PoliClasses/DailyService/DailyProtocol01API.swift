@@ -9,7 +9,7 @@ class DailyProtocol01API: ProtocolHandlerUtil {
     private var lstSkinTemp: [LTMModel.SkinTemp] = []
     private var lstMets: [LTMModel.Mets] = []
     
-    func request(completion: @escaping (DailyResponse) -> Void) {
+    func request(completion: @escaping (DailyProtocol01Response) -> Void) {
         let requestBody: [String: Any] = [
             "reqDate": Date().currentTimeString(),
             "userSno": PoliAPI.shared.userSno,
@@ -23,7 +23,7 @@ class DailyProtocol01API: ProtocolHandlerUtil {
             body: requestBody
         ) { result in
             do {
-                let response = try DailyResponse.convertToDailyResponse(from: result)
+                let response = try DailyProtocol01Response.convertToDailyResponse(from: result, ltmModel: self.ltmModel!)
                 completion(response)
             } catch {
                 print("[Error] Failed to parse SleepProtocol06Response\(error)")

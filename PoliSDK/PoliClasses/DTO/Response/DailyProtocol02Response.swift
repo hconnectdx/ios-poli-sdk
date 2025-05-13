@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - SleepResponse
+// MARK: - DailyProtocol02Response
 
 public class DailyProtocol02Response: BaseResponse {
     public var data: Data?

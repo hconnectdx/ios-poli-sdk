@@ -42,6 +42,15 @@ public class HCBle: NSObject {
             print("Central Manager is not initialized")
             return
         }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // 항상 딜레이
+            if centralManager.state == .poweredOn {
+                centralManager.scanForPeripherals(withServices: nil)
+                print("Started scanning after fixed delay")
+            } else {
+                print("Bluetooth is not powered on")
+            }
+        }
     }
 
     public func stopScan() {
@@ -282,7 +291,7 @@ extension HCBle: CBCentralManagerDelegate {
         }
 
         if centralManager?.state == .poweredOn {
-            centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+            centralManager?.scanForPeripherals(withServices: nil)
 
             print("Scanning for peripherals...")
         } else {
