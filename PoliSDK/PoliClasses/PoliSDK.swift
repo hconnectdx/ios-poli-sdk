@@ -79,9 +79,9 @@ public class PoliBLE {
         HCBle.shared.readData(uuid: uuid)
     }
     
-    /** TODO : 개별 디바이스에서 통신하도록 만들어야 함 */
-    public func writeData(_ data: Data) {
-        // TODO:
+    public func writeData(uuid: UUID, _ data: Data) {
+//        HCBle.shared.writeData(uuid: uuid, data)
+        HCBle.shared.writeData(uuid: uuid, data: data)
     }
     
     public func enableNotifications(uuid: UUID) {

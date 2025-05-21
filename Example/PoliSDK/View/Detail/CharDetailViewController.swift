@@ -32,7 +32,9 @@ class CharDetailViewController: UIViewController {
     }
 
     @IBAction func onClickWrite(_ sender: UIButton) {
-        print("123")
+        let byteArray = [UInt8]("ECG_RESTART".utf8)
+        let data = Data(byteArray)
+        PoliBLE.shared.writeData(uuid: uuid, data)
     }
 
     @IBAction func onClickRead(_ sender: UIButton) {

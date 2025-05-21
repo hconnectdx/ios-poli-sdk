@@ -93,28 +93,36 @@ public class HCBle: NSObject {
     }
 
     public func readData(uuid: UUID) {
+        // 1. peripherals 배열에서 해당 UUID의 peripheralModel을 찾기
         guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
             print("Peripheral not added yet. Please call connect first.")
             return
         }
 
+        // 2. peripheral과 characteristic이 유효한지 확인
         guard let peripheral = peripheralModel.peripheral, let characteristic = peripheralModel.selChar else {
             print("Peripheral or characteristic is not set. Please ensure they are initialized.")
             return
         }
 
+        // 3. characteristic으로부터 데이터 읽기
         peripheral.readValue(for: characteristic)
     }
 
-    /** TODO : 개별 디바이스에서 통신하도록 만들어야 함 */
-    public func writeData(_ data: Data) {
-        guard let peripheral = peripheral, let characteristic = selChar else {
+    public func writeData(uuid: UUID, data: Data) {
+        // 1. peripherals 배열에서 해당 UUID의 peripheralModel을 찾기
+        guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
+            print("Peripheral not added yet. Please call connect first.")
+            return
+        }
+
+        // 2. peripheral과 characteristic이 유효한지 확인
+        guard let peripheral = peripheralModel.peripheral, let characteristic = peripheralModel.selChar else {
             print("Peripheral or characteristic is not set. Please ensure they are initialized.")
             return
         }
 
-        // Write the data to the characteristic
-        // Use .withResponse if you need confirmation that the write was successful
+        // 3. 데이터를 characteristic에 write (응답을 받는 방식으로)
         peripheral.writeValue(data, for: characteristic, type: .withResponse)
     }
 

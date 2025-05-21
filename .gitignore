@@ -34,3 +34,23 @@ Carthage/Build
 # `pod install` in .travis.yml
 #
 # Pods/
+
+Example/Pods/Pods.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+
+Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests-acknowledgements.markdown
+
+Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests-frameworks-Debug-input-files.xcfilelist
+
+Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests-frameworks-Debug-output-files.xcfilelist
+
+Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests-frameworks-Release-input-files.xcfilelist
+
+Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests-frameworks-Release-output-files.xcfilelist
+
+Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests-frameworks.sh
+
+Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests.debug.xcconfig
+
+Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests.release.xcconfig
+
+Example/Pods/Local Podspecs/

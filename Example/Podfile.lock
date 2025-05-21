@@ -1,10 +1,11 @@
 PODS:
-  - HCBle (0.1.9)
+  - HCBle (1.0.1)
   - Nimble (10.0.0)
-  - PoliSDK (1.0.2):
-    - HCBle (~> 0.1.9)
+  - PoliSDK (1.0.5):
+    - HCBle (~> 1.0.1)
 
 DEPENDENCIES:
+  - HCBle (~> 1.0.1)
   - Nimble (~> 10.0.0)
   - PoliSDK (from `../`)
 
@@ -19,10 +20,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  HCBle: bb310c67a9b82c5c908e40ec1fa1d2612813e894
+  HCBle: 7610260623fbf20b96eebe73c1d226ff1216f0fd
   Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
-  PoliSDK: ba386c9c5f7eb3998536bdaf7197d664a64f7478
+  PoliSDK: 6e818cce1094affc0c51514c8d378fff752d6e26
 
-PODFILE CHECKSUM: 546780e372ebe3ddbcd316a5bb49f46ba8282474
+PODFILE CHECKSUM: 134212b7db8826d38c3614937cb53ed6458a4647
 
 COCOAPODS: 1.16.2
