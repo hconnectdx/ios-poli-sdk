@@ -18,13 +18,20 @@ class DailyProtocol03API: ProtocolHandlerUtil {
         // API 요청 수행
         PoliAPI.shared.post(
             path: "/day/protocol3",
-            body: request)
-        { result in
+            body: request
+        ) { result in
             do {
                 let response = try DailyProtocol03Response.convertToDailyResponse(from: result)
                 completion(response)
             } catch {
-                print("[Error] Failed to parse DailyResponse\(error)")
+                print("[Error] Failed to parse DailyProtocol03Response\(error)")
+                let response = DailyProtocol03Response(
+                    retCd: "-1",
+                    retMsg: error.localizedDescription,
+                    resDate: DateUtil.getCurrentDateTime()
+                )
+                
+                completion(response)
             }
         }
     }

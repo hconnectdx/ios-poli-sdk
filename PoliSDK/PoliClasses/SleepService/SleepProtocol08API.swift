@@ -19,14 +19,21 @@ class SleepProtocol08API: ProtocolHandlerUtil {
             path: "/sleep/protocol8",
             parameters: requestBody,
             fileData: SleepProtocol08API.shared.flush(),
-            fileName: "ios_protocol08")
-        { result in
+            fileName: "ios_protocol08"
+        ) { result in
             do {
                 let response = try SleepResponse.convertToSleepResponse(from: result)
                 completion(response)
                 
             } catch {
-                print("[Error] Failed to parse SleepProtocol06Response\(error)")
+                print("[Error] Failed to parse SleepProtocol08Response\(error)")
+                let response = SleepResponse(
+                    retCd: "-1",
+                    retMsg: error.localizedDescription,
+                    resDate: DateUtil.getCurrentDateTime()
+                )
+                
+                completion(response)
             }
         }
     }

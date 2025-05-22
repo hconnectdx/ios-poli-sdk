@@ -29,6 +29,7 @@ class CharDetailViewController: UIViewController {
             clientId: "659c95fd-900a-4a9a-8f61-1888334a3c7b",
             clientSecret: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZyYSI6IkhlYWx0aE9uLUxpdmUiLCJjbGllbnQtaWQiOiI2NTljOTVmZC05MDBhLTRhOWEtOGY2MS0xODg4MzM0YTNjN2IifQ.GV8Fg5pY-08GlZI0UUFLIqtrmlwnU7kQ-soN6VFlj_usXBex7mv3-vjkAZxV5Yb2MMecifUqwOQpikyirX9aBw"
         )
+        PoliAPI.shared.userSno = 1
     }
 
     @IBAction func onClickWrite(_ sender: UIButton) {

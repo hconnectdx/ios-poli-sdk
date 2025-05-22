@@ -18,14 +18,21 @@ class SleepProtocol09API: ProtocolHandlerUtil {
         // API 요청 수행
         PoliAPI.shared.post(
             path: "/sleep/protocol9",
-            body: request)
-        { result in
+            body: request
+        ) { result in
             do {
                 let response = try SleepResponse.convertToSleepResponse(from: result)
                 PoliAPI.shared.sessionId = response.data?.sessionId ?? ""
                 completion(response)
             } catch {
                 print("[Error] Failed to parse SleepProtocol09Response\(error)")
+                let response = SleepResponse(
+                    retCd: "-1",
+                    retMsg: error.localizedDescription,
+                    resDate: DateUtil.getCurrentDateTime()
+                )
+                
+                completion(response)
             }
         }
     }

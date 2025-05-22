@@ -26,7 +26,14 @@ class DailyProtocol01API: ProtocolHandlerUtil {
                 let response = try DailyProtocol01Response.convertToDailyResponse(from: result, ltmModel: self.ltmModel!)
                 completion(response)
             } catch {
-                print("[Error] Failed to parse SleepProtocol06Response\(error)")
+                print("[Error] Failed to parse DailyProtocol01Response\(error)")
+                let response = DailyProtocol01Response(
+                    retCd: "-1",
+                    retMsg: error.localizedDescription,
+                    resDate: DateUtil.getCurrentDateTime()
+                )
+                
+                completion(response)
             }
         }
     }

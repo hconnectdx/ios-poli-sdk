@@ -46,6 +46,12 @@ class SleepSessionAPI: ProtocolHandlerUtil {
                 completion(response)
             } catch {
                 print("[Error] Failed to parse SleepStopResponse\(error)")
+                let response = SleepStopResponse(
+                    retCd: "-1",
+                    retMsg: error.localizedDescription,
+                    resDate: DateUtil.getCurrentDateTime())
+
+                completion(response)
             }
         }
     }
