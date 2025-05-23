@@ -15,6 +15,9 @@ public class PoliBLE {
     private var onReadCharacteristic: (() -> Void)?
     private var onWriteCharacteristic: (() -> Void)?
     
+    // Protocol 02 패킷 순서 추적을 위한 변수
+    private var p2ExpectedOrder: UInt8 = 0x00
+    
     /// 블루투스 스캔 시작
     /// - Parameter completion: 스캔 결과를 전달하는 콜백
     public func scan(completion: @escaping (CBPeripheral, [String: Any], NSNumber) -> Void) {
@@ -131,15 +134,39 @@ public class PoliBLE {
                     }
                 }
             case 0x02:
+                print("DataOrder: \(String(format: "0x%02X", dataOrder))")
                 
+                let isLast = dataOrder == 0xff
+                
+                if isLast {
+                    // Last packet (0xFF)
+                    p2ExpectedOrder = 0x00 // Reset for the next sequence
+                } else {
+                    // Packet is 0x00 to 0xFE
+                    if dataOrder == 0x00 {
+                        // For 0x00, the next expected packet is 0x01.
+                        // Specific error for "bad 0x00 start" is handled by the existing prevByte check below.
+                        p2ExpectedOrder = 0x01
+                    } else {
+                        // Packet is 0x01 to 0xFE
+                        if dataOrder != p2ExpectedOrder {
+                            print("[Error] Protocol02 packet order mismatch. Expected: \(String(format: "0x%02X", p2ExpectedOrder)), Got: \(String(format: "0x%02X", dataOrder))")
+                            onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_ERROR_LACK_OF_DATA, nil)
+                            return
+                        }
+                        // Update expectation for the next packet, even if there was loss, to resync.
+                        p2ExpectedOrder = dataOrder + 1
+                    }
+                }
+                
+                // Existing logic with user's requested modification for specific 0x00 start condition
                 if DailyProtocol02API.shared.preByte != 0xfe, dataOrder == 0x00 {
                     print("Protocol02 Start")
                     onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_START, nil)
                 }
-                DailyProtocol02API.shared.preByte = dataOrder
-                let removedHeaderData = DailyProtocol02API.shared.removeFrontBytes(data: data, size: 2)
                 
-                let isLast = dataOrder == 0xff
+                DailyProtocol02API.shared.preByte = dataOrder // Update preByte for the next call's check
+                let removedHeaderData = DailyProtocol02API.shared.removeFrontBytes(data: data, size: 2)
                 
                 DailyProtocol02API.shared.addDaily02ByteNew(data: removedHeaderData, isLast: isLast)
                 
