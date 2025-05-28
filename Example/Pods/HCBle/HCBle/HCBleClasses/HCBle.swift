@@ -162,6 +162,83 @@ public class HCBle: NSObject {
         peripheralModel.selChar = characteristic
     }
 
+    public func setTargetService(uuid: UUID, serviceUUID: String) {
+        guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
+            print("Peripheral not added yet. Please call connect first.")
+            return
+        }
+
+        guard let peripheral = peripheralModel.peripheral else {
+            print("Peripheral is not set.")
+            return
+        }
+
+        // Check if services have been discovered
+        guard let services = peripheral.services else {
+            print("Services not discovered yet. Please discover services first.")
+            return
+        }
+
+        // Find the service with matching UUID
+        let targetService = services.first { service in
+            service.uuid.uuidString.uppercased() == serviceUUID.uppercased()
+        }
+
+        if let foundService = targetService {
+            peripheralModel.selService = foundService
+            print("✅ Target service set for peripheral UUID: \(uuid)")
+            print("🎯 Service UUID: \(foundService.uuid.uuidString)")
+        } else {
+            print("❌ Service with UUID '\(serviceUUID)' not found in discovered services")
+            print("📋 Available services:")
+            for service in services {
+                print("   - \(service.uuid.uuidString)")
+            }
+        }
+    }
+
+    public func setTargetChar(uuid: UUID, characteristicUUID: String) {
+        guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
+            print("Peripheral not added yet. Please call connect first.")
+            return
+        }
+
+        guard let peripheral = peripheralModel.peripheral else {
+            print("Peripheral is not set.")
+            return
+        }
+
+        // Check if service has been set
+        guard let selectedService = peripheralModel.selService else {
+            print("Selected service is not set. Please set target service first using setTargetService.")
+            return
+        }
+
+        // Check if characteristics have been discovered for the selected service
+        guard let characteristics = selectedService.characteristics else {
+            print("Characteristics not discovered yet for the selected service. Please discover characteristics first.")
+            return
+        }
+
+        // Find the characteristic with matching UUID
+        let targetCharacteristic = characteristics.first { characteristic in
+            characteristic.uuid.uuidString.uppercased() == characteristicUUID.uppercased()
+        }
+
+        if let foundCharacteristic = targetCharacteristic {
+            peripheralModel.selChar = foundCharacteristic
+            print("✅ Target characteristic set for peripheral UUID: \(uuid)")
+            print("🎯 Characteristic UUID: \(foundCharacteristic.uuid.uuidString)")
+            print("🔧 Properties: \(foundCharacteristic.properties)")
+        } else {
+            print("❌ Characteristic with UUID '\(characteristicUUID)' not found in selected service")
+            print("📋 Available characteristics in service \(selectedService.uuid.uuidString):")
+            for characteristic in characteristics {
+                print("   - \(characteristic.uuid.uuidString) (Properties: \(characteristic.properties))")
+            }
+        }
+    }
+
     public func disconnect(uuid: UUID) {
         guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
             print("Peripheral not added yet. Please call connect first.")

@@ -12,6 +12,6 @@ target 'PoliSDK_Example' do
     inherit! :search_paths
 
     pod 'Nimble', '~> 10.0.0'
-    pod 'HCBle', '~> 1.0.1'
+    pod 'HCBle', '~> 1.0.2'
   end
 end

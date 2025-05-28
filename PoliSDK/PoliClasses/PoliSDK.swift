@@ -95,8 +95,16 @@ public class PoliBLE {
         HCBle.shared.setService(uuid: uuid, service: service)
     }
     
+    public func setTargetService(uuid: UUID, serviceUUID: String) {
+        HCBle.shared.setTargetService(uuid: uuid, serviceUUID: serviceUUID)
+    }
+    
     public func setChar(uuid: UUID, characteristic: CBCharacteristic) {
         HCBle.shared.setChar(uuid: uuid, characteristic: characteristic)
+    }
+    
+    public func setTargetChar(uuid: UUID, characteristicUUID: String) {
+        HCBle.shared.setTargetChar(uuid: uuid, characteristicUUID: characteristicUUID)
     }
     
     public func disconnect(uuid: UUID) {
@@ -284,7 +292,7 @@ public class PoliBLE {
                 }
                 
             default:
-                break
+                print("⚠️ Unknown protocol type: \(String(format: "0x%02X", protocolType))")
         }
     }
 }
