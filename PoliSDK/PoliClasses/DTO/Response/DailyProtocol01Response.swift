@@ -23,7 +23,7 @@ public class DailyProtocol01Response: BaseResponse {
         }
     }
     
-    static func convertToDailyResponse(from dictionary: [String: Any], ltmModel _: LTMModel) throws -> DailyProtocol01Response {
+    static func convertToDailyResponse(from dictionary: [String: Any], ltmModel: LTMModel) throws -> DailyProtocol01Response {
         // 기본 응답 필드 추출
         let retCd = dictionary["retCd"] as? String ?? ""
         let retMsg = dictionary["retMsg"] as? String ?? ""
@@ -33,8 +33,8 @@ public class DailyProtocol01Response: BaseResponse {
         let response = DailyProtocol01Response(retCd: retCd, retMsg: retMsg, resDate: resDate)
         
         // LTMModel 생성
-        if let ltmModel = LTMModel.fromDictionary(dictionary) {
-            response.data = DailyProtocol01Response.Data(ltmModel: ltmModel)
+        if let ltmModelTmp = LTMModel.fromDictionary(ltmModel.toDictionary()) {
+            response.data = DailyProtocol01Response.Data(ltmModel: ltmModelTmp)
         } else {
             throw NSError(
                 domain: "ResponseParsingError",
