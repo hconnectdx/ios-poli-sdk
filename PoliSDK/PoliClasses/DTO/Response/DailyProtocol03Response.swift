@@ -34,19 +34,11 @@ public class DailyProtocol03Response: BaseResponse {
         
         // data 필드 처리
         if let dataDict = dictionary["data"] as? [String: Any] {
-            if let heartRateVal = dataDict["heartRateVal"] as? Int,
-               let oxygenVal = dataDict["oxygenVal"] as? Int
-            {
-                let hrSpO2 = HRSpO2(heartRate: heartRateVal, spo2: oxygenVal)
-                response.data = DailyProtocol03Response.Data(hrSpO2: hrSpO2)
-            } else {
-                // 필수 필드가 없는 경우 오류 발생
-                throw NSError(
-                    domain: "ResponseParsingError",
-                    code: 1001,
-                    userInfo: [NSLocalizedDescriptionKey: "Missing or invalid heartRateVal or oxygenVal in data"]
-                )
-            }
+            let heartRateVal = dataDict["heartRateVal"] as? Int
+            let oxygenVal = dataDict["oxygenVal"] as? Int
+            
+            let hrSpO2 = HRSpO2(heartRate: heartRateVal, spo2: oxygenVal)
+            response.data = DailyProtocol03Response.Data(hrSpO2: hrSpO2)
         }
         
         return response

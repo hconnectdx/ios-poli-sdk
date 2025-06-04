@@ -2,11 +2,11 @@ import Foundation
 
 // HRSpO2 구조체 정의
 public struct HRSpO2: Codable, Equatable {
-    public let heartRate: Int
-    public let spo2: Int
+    public let heartRate: Int?
+    public let spo2: Int?
     
     // 간편 초기화를 위한 생성자
-    public init(heartRate: Int, spo2: Int) {
+    public init(heartRate: Int?, spo2: Int?) {
         self.heartRate = heartRate
         self.spo2 = spo2
     }
@@ -29,7 +29,7 @@ public struct HRSpO2: Codable, Equatable {
     }
     
     // Dictionary로 변환하는 함수
-    func toDictionary() -> [String: Any] {
+    func toDictionary() -> [String: Any?] {
         return [
             "heartRate": heartRate,
             "spo2": spo2
@@ -38,11 +38,8 @@ public struct HRSpO2: Codable, Equatable {
     
     // Dictionary에서 HRSpO2 생성하는 정적 함수
     static func fromDictionary(_ dict: [String: Any]) -> HRSpO2? {
-        guard let heartRate = dict["heartRate"] as? Int,
-              let spo2 = dict["spo2"] as? Int
-        else {
-            return nil
-        }
+        let heartRate = dict["heartRate"] as? Int
+        let spo2 = dict["spo2"] as? Int
         
         return HRSpO2(heartRate: heartRate, spo2: spo2)
     }
