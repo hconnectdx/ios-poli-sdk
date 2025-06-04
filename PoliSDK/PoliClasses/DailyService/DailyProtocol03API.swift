@@ -21,16 +21,23 @@ class DailyProtocol03API: ProtocolHandlerUtil {
             body: request
         ) { result in
             do {
-                let response = try DailyProtocol03Response.convertToDailyResponse(from: result)
+                var response = try DailyProtocol03Response.convertToDailyResponse(from: result)
+                
+                let heartRate = data["heartRateVal"] as? Int
+                let spo2 = data["oxygenVal"] as? Int
+                let hrSpO2Data = HRSpO2(heartRate: heartRate, spo2: spo2)
+                
+                // 새로운 Data 인스턴스 생성해서 할당
+                response.data = DailyProtocol03Response.Data(hrSpO2: hrSpO2Data)
+                
                 completion(response)
             } catch {
-                print("[Error] Failed to parse DailyProtocol03Response\(error)")
+                print("[Error] Failed to parse DailyProtocol03Response: \(error)")
                 let response = DailyProtocol03Response(
                     retCd: "-1",
                     retMsg: error.localizedDescription,
                     resDate: DateUtil.getCurrentDateTime()
                 )
-                
                 completion(response)
             }
         }

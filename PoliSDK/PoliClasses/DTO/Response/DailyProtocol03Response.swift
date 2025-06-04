@@ -16,7 +16,7 @@ public class DailyProtocol03Response: BaseResponse {
     }
     
     public class Data {
-        public let hrSpO2: HRSpO2
+        public var hrSpO2: HRSpO2
         
         public init(hrSpO2: HRSpO2) {
             self.hrSpO2 = hrSpO2
