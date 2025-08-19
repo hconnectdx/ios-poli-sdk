@@ -22,12 +22,16 @@ class CharDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
         lblChar.text = characteristic.uuid.uuidString
         PoliBLE.shared.setService(uuid: uuid, service: service)
-        PoliBLE.shared.setChar(uuid: uuid, characteristic: characteristic)
+        PoliBLE.shared.setReadChar(uuid: uuid, characteristic: characteristic)
 
         PoliAPI.shared.initialize(
-            baseUrl: "https://mapi.health-on.co.kr/poli",
-            clientId: "659c95fd-900a-4a9a-8f61-1888334a3c7b",
-            clientSecret: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZyYSI6IkhlYWx0aE9uLUxpdmUiLCJjbGllbnQtaWQiOiI2NTljOTVmZC05MDBhLTRhOWEtOGY2MS0xODg4MzM0YTNjN2IifQ.GV8Fg5pY-08GlZI0UUFLIqtrmlwnU7kQ-soN6VFlj_usXBex7mv3-vjkAZxV5Yb2MMecifUqwOQpikyirX9aBw"
+            baseUrl: "https://mapi-stg.health-on.co.kr/poli",
+            clientId: "3270e7da-55b1-4dd4-abb9-5c71295b849b",
+            clientSecret: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZyYSI6IkhlYWx0aE9uLVN0YWdpbmciLCJjbGllbnQtaWQiOiIzMjcwZTdkYS01NWIxLTRkZDQtYWJiOS01YzcxMjk1Yjg0OWIifQ.u0rBK-2t3l4RZ113EzudZsKb0Us9PEtiPcFDBv--gYdJf9yZJQOpo41XqzbgSdDa6Z1VDrgZXiOkIZOTeeaEYA"
+            
+//            baseUrl: "https://mapi.health-on.co.kr/poli",
+//            clientId: "659c95fd-900a-4a9a-8f61-1888334a3c7b",
+//            clientSecret: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZyYSI6IkhlYWx0aE9uLUxpdmUiLCJjbGllbnQtaWQiOiI2NTljOTVmZC05MDBhLTRhOWEtOGY2MS0xODg4MzM0YTNjN2IifQ.GV8Fg5pY-08GlZI0UUFLIqtrmlwnU7kQ-soN6VFlj_usXBex7mv3-vjkAZxV5Yb2MMecifUqwOQpikyirX9aBw"
         )
         PoliAPI.shared.userSno = 1
     }

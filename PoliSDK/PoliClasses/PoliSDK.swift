@@ -17,6 +17,7 @@ public class PoliBLE {
     
     // Protocol 02 패킷 순서 추적을 위한 변수
     private var p2ExpectedOrder: UInt8 = 0x00
+    private var p2IsFirstPacket: Bool = true
     
     /// 블루투스 스캔 시작
     /// - Parameter completion: 스캔 결과를 전달하는 콜백
@@ -99,12 +100,12 @@ public class PoliBLE {
         HCBle.shared.setTargetService(uuid: uuid, serviceUUID: serviceUUID)
     }
     
-    public func setChar(uuid: UUID, characteristic: CBCharacteristic) {
-        HCBle.shared.setChar(uuid: uuid, characteristic: characteristic)
+    public func setReadChar(uuid: UUID, characteristic: CBCharacteristic) {
+        HCBle.shared.setReadChar(uuid: uuid, characteristic: characteristic)
     }
     
-    public func setTargetChar(uuid: UUID, characteristicUUID: String) {
-        HCBle.shared.setTargetChar(uuid: uuid, characteristicUUID: characteristicUUID)
+    public func setTargetReadChar(uuid: UUID, characteristicUUID: String) {
+        HCBle.shared.setTargetReadChar(uuid: uuid, characteristicUUID: characteristicUUID)
     }
     
     public func disconnect(uuid: UUID) {
@@ -141,64 +142,74 @@ public class PoliBLE {
                         onReceiveSubscribtionData?(ProtocolType.PROTOCOL_1, response)
                     }
                 }
-            case 0x02:
-                print("DataOrder: \(String(format: "0x%02X", dataOrder))")
-                
-                let isLast = dataOrder == 0xff
-                
-                if isLast {
-                    // Last packet (0xFF)
-                    p2ExpectedOrder = 0x00 // Reset for the next sequence
+        case 0x02:
+            print("DataOrder: \(String(format: "0x%02X", dataOrder))")
+            
+            let isLast = dataOrder == 0xff
+            
+            if isLast {
+                // Last packet (0xFF) - 프로세스 종료
+                p2ExpectedOrder = 0x00 // Reset for next sequence
+                p2IsFirstPacket = true
+            } else {
+                // Packet is 0x00 to 0xFE
+                if dataOrder == 0x00 {
+                    // 새로운 시퀀스 시작 (항상 0x00부터)
+                    p2ExpectedOrder = 0x01
+                    p2IsFirstPacket = false
+                    print("Protocol02 sequence started with 0x00")
                 } else {
-                    // Packet is 0x00 to 0xFE
-                    if dataOrder == 0x00 {
-                        // For 0x00, the next expected packet is 0x01.
-                        // Specific error for "bad 0x00 start" is handled by the existing prevByte check below.
-                        p2ExpectedOrder = 0x01
+                    // 0x01 ~ 0xFE 패킷들
+                    if p2IsFirstPacket {
+                        // 첫 번째 패킷이 0x00이 아닌 경우 = 중간부터 시작 (패킷 손실)
+                        print("[Warning] Protocol02 started from middle: \(String(format: "0x%02X", dataOrder)) - possible packet loss")
+                        p2ExpectedOrder = (dataOrder == 0xFE) ? 0x00 : (dataOrder + 1)
+                        p2IsFirstPacket = false
                     } else {
-                        // Packet is 0x01 to 0xFE
+                        // 순서 검증
                         if dataOrder != p2ExpectedOrder {
                             print("[Error] Protocol02 packet order mismatch. Expected: \(String(format: "0x%02X", p2ExpectedOrder)), Got: \(String(format: "0x%02X", dataOrder))")
                             onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_ERROR_LACK_OF_DATA, nil)
                             return
                         }
-                        // Update expectation for the next packet, even if there was loss, to resync.
-                        p2ExpectedOrder = dataOrder + 1
+                        // 다음 기대값 업데이트 (0xFE 다음은 0x00)
+                        p2ExpectedOrder = (dataOrder == 0xFE) ? 0x00 : (dataOrder + 1)
                     }
                 }
+            }
+            
+            // 시작 조건 체크 (0x00이고 이전 바이트가 0xFE가 아닌 경우)
+            if dataOrder == 0x00 && DailyProtocol02API.shared.preByte != 0xfe {
+                print("Protocol02 Start")
+                onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_START, nil)
+            }
+            
+            DailyProtocol02API.shared.preByte = dataOrder
+            let removedHeaderData = DailyProtocol02API.shared.removeFrontBytes(data: data, size: 2)
+            DailyProtocol02API.shared.addDaily02ByteNew(data: removedHeaderData, isLast: isLast)
+            
+            if isLast {
+                let byteSize = DailyProtocol02API.shared.getCurrentByteArraySize()
+                print("Protocol02 ByteArray size: \(byteSize)")
                 
-                // Existing logic with user's requested modification for specific 0x00 start condition
-                if DailyProtocol02API.shared.preByte != 0xfe, dataOrder == 0x00 {
-                    print("Protocol02 Start")
-                    onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_START, nil)
+                if byteSize <= 192_000 {
+                    let filePath = DailyProtocol02API.shared.saveToFile()
+                    print("Protocol02 데이터가 파일로 저장되었습니다: \(filePath)")
+                    
+                    DailyProtocol02API.shared.request(completion: { response in
+                        print("DailyProtocol02API response: \(response)")
+                        onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2, response)
+                    }, saveToFile: false)
+                } else {
+                    print("[Error] Protocol02 has insufficient data: \(byteSize) bytes")
+                    onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_ERROR_LACK_OF_DATA, nil)
                 }
                 
-                DailyProtocol02API.shared.preByte = dataOrder // Update preByte for the next call's check
-                let removedHeaderData = DailyProtocol02API.shared.removeFrontBytes(data: data, size: 2)
-                
-                DailyProtocol02API.shared.addDaily02ByteNew(data: removedHeaderData, isLast: isLast)
-                
-                if isLast {
-                    let byteSize = DailyProtocol02API.shared.getCurrentByteArraySize()
-                    print("Protocol02 ByteArray size: \(byteSize)")
-                    
-                    if byteSize == 192_000 {
-                        // 데이터를 bin 파일로 저장 (디버깅/분석용)
-                        let filePath = DailyProtocol02API.shared.saveToFile()
-                        print("Protocol02 데이터가 파일로 저장되었습니다: \(filePath)")
-                        
-                        DailyProtocol02API.shared.request(completion: { response in
-                            print("DailyProtocol02API response: \(response)")
-                            onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2, response)
-                        }, saveToFile: false) // 이미 위에서 저장했으므로 false로 설정
-                    } else {
-                        print("[Error] Protocol02 has insufficient data: \(byteSize) bytes")
-                        onReceiveSubscribtionData?(ProtocolType.PROTOCOL_2_ERROR_LACK_OF_DATA, nil)
-                    }
-                    
-                    // Reset data after processing
-                    DailyProtocol02API.shared.preByte = 0x00
-                }
+                // Reset after processing
+                DailyProtocol02API.shared.preByte = 0x00
+                p2ExpectedOrder = 0x00
+                p2IsFirstPacket = true
+            }
         
             case 0x03:
                 do {
@@ -229,10 +240,11 @@ public class PoliBLE {
             case 0x05:
                 SleepSessionAPI.shared.requestSleepStop { response in
                     if response.retCd != "0" {
-                        print("retcd \(response.retCd)중지 실패")
+                        print("retcd: \(response.retCd)")
+                        print("msg: \(response.retMsg)")
                         onReceiveSubscribtionData?(ProtocolType.PROTOCOL_5_SLEEP_END_ERROR, response)
                     } else {
-                        print("retcd \(response.retCd)중지 성공")
+                        print("retcd \(response.retCd)")
                         print("sleepQuailty : \(response.data?.sleepQuality ?? 0)")
                         onReceiveSubscribtionData?(ProtocolType.PROTOCOL_5_SLEEP_END, response)
                     }

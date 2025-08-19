@@ -3,12 +3,14 @@ import CoreBluetooth
 public class HCBle: NSObject {
     class PeripheralModel {
         var selService: CBService?
-        var selChar: CBCharacteristic?
+        var writeChar: CBCharacteristic?  // 🔧 Write 전용 Characteristic
+        var readChar: CBCharacteristic?   // 🔧 Read 전용 Characteristic
         var peripheral: CBPeripheral?
 
-        init(selService: CBService? = nil, selChar: CBCharacteristic? = nil, peripheral: CBPeripheral? = nil) {
+        init(selService: CBService? = nil, writeChar: CBCharacteristic? = nil, readChar: CBCharacteristic? = nil, peripheral: CBPeripheral? = nil) {
             self.selService = selService
-            self.selChar = selChar
+            self.writeChar = writeChar
+            self.readChar = readChar
             self.peripheral = peripheral
         }
     }
@@ -99,14 +101,15 @@ public class HCBle: NSObject {
             return
         }
 
-        // 2. peripheral과 characteristic이 유효한지 확인
-        guard let peripheral = peripheralModel.peripheral, let characteristic = peripheralModel.selChar else {
-            print("Peripheral or characteristic is not set. Please ensure they are initialized.")
+        // 2. peripheral과 read characteristic이 유효한지 확인
+        guard let peripheral = peripheralModel.peripheral, let readCharacteristic = peripheralModel.readChar else {
+            print("Peripheral or read characteristic is not set. Please ensure they are initialized.")
             return
         }
 
-        // 3. characteristic으로부터 데이터 읽기
-        peripheral.readValue(for: characteristic)
+        // 3. read characteristic으로부터 데이터 읽기
+        peripheral.readValue(for: readCharacteristic)
+        print("✅ Reading data from read characteristic: \(readCharacteristic.uuid.uuidString)")
     }
 
     public func writeData(uuid: UUID, data: Data) {
@@ -116,14 +119,15 @@ public class HCBle: NSObject {
             return
         }
 
-        // 2. peripheral과 characteristic이 유효한지 확인
-        guard let peripheral = peripheralModel.peripheral, let characteristic = peripheralModel.selChar else {
-            print("Peripheral or characteristic is not set. Please ensure they are initialized.")
+        // 2. peripheral과 write characteristic이 유효한지 확인
+        guard let peripheral = peripheralModel.peripheral, let writeCharacteristic = peripheralModel.writeChar else {
+            print("Peripheral or write characteristic is not set. Please ensure they are initialized.")
             return
         }
 
-        // 3. 데이터를 characteristic에 write (응답을 받는 방식으로)
-        peripheral.writeValue(data, for: characteristic, type: .withResponse)
+        // 3. 데이터를 write characteristic에 write (응답을 받는 방식으로)
+        peripheral.writeValue(data, for: writeCharacteristic, type: .withResponse)
+        print("✅ Writing data to write characteristic: \(writeCharacteristic.uuid.uuidString)")
     }
 
     public func enableNotifications(uuid: UUID) {
@@ -133,13 +137,14 @@ public class HCBle: NSObject {
             return
         }
 
-        guard let peripheral = peripheralModel.peripheral, let characteristic = peripheralModel.selChar else {
-            print("Peripheral or characteristic is not set. Please ensure they are initialized.")
+        guard let peripheral = peripheralModel.peripheral, let readCharacteristic = peripheralModel.readChar else {
+            print("Peripheral or read characteristic is not set. Please ensure they are initialized.")
             return
         }
 
-        // Enable notifications for the characteristic
-        peripheral.setNotifyValue(true, for: characteristic)
+        // Enable notifications for the read characteristic
+        peripheral.setNotifyValue(true, for: readCharacteristic)
+        print("✅ Enabling notifications for read characteristic: \(readCharacteristic.uuid.uuidString)")
     }
 
     public func setService(uuid: UUID, service: CBService) {
@@ -153,13 +158,28 @@ public class HCBle: NSObject {
         print("Service set for peripheral with UUID: \(uuid)")
     }
 
-    public func setChar(uuid: UUID, characteristic: CBCharacteristic) {
+    // 🆕 Write Characteristic 설정
+    public func setWriteChar(uuid: UUID, characteristic: CBCharacteristic) {
         guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
             print("Peripheral not added yet. Please call connect first.")
             return
         }
 
-        peripheralModel.selChar = characteristic
+        peripheralModel.writeChar = characteristic
+        print("✅ Write characteristic set for peripheral UUID: \(uuid)")
+        print("🎯 Write Characteristic UUID: \(characteristic.uuid.uuidString)")
+    }
+
+    // 🆕 Read Characteristic 설정
+    public func setReadChar(uuid: UUID, characteristic: CBCharacteristic) {
+        guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
+            print("Peripheral not added yet. Please call connect first.")
+            return
+        }
+
+        peripheralModel.readChar = characteristic
+        print("✅ Read characteristic set for peripheral UUID: \(uuid)")
+        print("🎯 Read Characteristic UUID: \(characteristic.uuid.uuidString)")
     }
 
     public func setTargetService(uuid: UUID, serviceUUID: String) {
@@ -196,8 +216,9 @@ public class HCBle: NSObject {
             }
         }
     }
-
-    public func setTargetChar(uuid: UUID, characteristicUUID: String) {
+    
+    // 🆕 Write Characteristic UUID로 설정
+    public func setTargetWriteChar(uuid: UUID, characteristicUUID: String) {
         guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
             print("Peripheral not added yet. Please call connect first.")
             return
@@ -220,18 +241,61 @@ public class HCBle: NSObject {
             return
         }
 
-        // Find the characteristic with matching UUID
+        // Find the write characteristic with matching UUID
         let targetCharacteristic = characteristics.first { characteristic in
             characteristic.uuid.uuidString.uppercased() == characteristicUUID.uppercased()
         }
 
         if let foundCharacteristic = targetCharacteristic {
-            peripheralModel.selChar = foundCharacteristic
-            print("✅ Target characteristic set for peripheral UUID: \(uuid)")
-            print("🎯 Characteristic UUID: \(foundCharacteristic.uuid.uuidString)")
+            peripheralModel.writeChar = foundCharacteristic
+            print("✅ Target write characteristic set for peripheral UUID: \(uuid)")
+            print("🎯 Write Characteristic UUID: \(foundCharacteristic.uuid.uuidString)")
             print("🔧 Properties: \(foundCharacteristic.properties)")
         } else {
-            print("❌ Characteristic with UUID '\(characteristicUUID)' not found in selected service")
+            print("❌ Write characteristic with UUID '\(characteristicUUID)' not found in selected service")
+            print("📋 Available characteristics in service \(selectedService.uuid.uuidString):")
+            for characteristic in characteristics {
+                print("   - \(characteristic.uuid.uuidString) (Properties: \(characteristic.properties))")
+            }
+        }
+    }
+
+    // 🆕 Read Characteristic UUID로 설정
+    public func setTargetReadChar(uuid: UUID, characteristicUUID: String) {
+        guard let peripheralModel = peripherals.first(where: { $0.peripheral?.identifier == uuid }) else {
+            print("Peripheral not added yet. Please call connect first.")
+            return
+        }
+
+        guard let peripheral = peripheralModel.peripheral else {
+            print("Peripheral is not set.")
+            return
+        }
+
+        // Check if service has been set
+        guard let selectedService = peripheralModel.selService else {
+            print("Selected service is not set. Please set target service first using setTargetService.")
+            return
+        }
+
+        // Check if characteristics have been discovered for the selected service
+        guard let characteristics = selectedService.characteristics else {
+            print("Characteristics not discovered yet for the selected service. Please discover characteristics first.")
+            return
+        }
+
+        // Find the read characteristic with matching UUID
+        let targetCharacteristic = characteristics.first { characteristic in
+            characteristic.uuid.uuidString.uppercased() == characteristicUUID.uppercased()
+        }
+
+        if let foundCharacteristic = targetCharacteristic {
+            peripheralModel.readChar = foundCharacteristic
+            print("✅ Target read characteristic set for peripheral UUID: \(uuid)")
+            print("🎯 Read Characteristic UUID: \(foundCharacteristic.uuid.uuidString)")
+            print("🔧 Properties: \(foundCharacteristic.properties)")
+        } else {
+            print("❌ Read characteristic with UUID '\(characteristicUUID)' not found in selected service")
             print("📋 Available characteristics in service \(selectedService.uuid.uuidString):")
             for characteristic in characteristics {
                 print("   - \(characteristic.uuid.uuidString) (Properties: \(characteristic.properties))")
