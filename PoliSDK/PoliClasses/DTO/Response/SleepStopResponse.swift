@@ -16,9 +16,9 @@ public class SleepStopResponse: BaseResponse {
     }
 
     public class Data {
-        public let sleepQuality: Int
+        public let sleepQuality: Int?
 
-        public init(sleepQuality: Int) {
+        public init(sleepQuality: Int?) {
             self.sleepQuality = sleepQuality
         }
     }
@@ -39,7 +39,7 @@ public class SleepStopResponse: BaseResponse {
             } else {
                 // sleepQuality가 없거나 Int 타입이 아닌 경우 오류 발생
                 print("sleepQuality is missing or invalid")
-                response.data = SleepStopResponse.Data(sleepQuality: 0)
+                response.data = SleepStopResponse.Data(sleepQuality: nil)
                 return response
             }
         }
