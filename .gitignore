@@ -54,3 +54,7 @@ Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests.debug.xc
 Example/Pods/Target Support Files/Pods-PoliSDK_Tests/Pods-PoliSDK_Tests.release.xcconfig
 
 Example/Pods/Local Podspecs/
+
+Example/Podfile.lock
+
+Example/Pods/

@@ -1,6 +1,0 @@
-framework module PoliSDK {
-  umbrella header "PoliSDK-umbrella.h"
-
-  export *
-  module * { export * }
-}
