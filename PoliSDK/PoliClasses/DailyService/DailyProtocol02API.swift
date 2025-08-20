@@ -55,4 +55,11 @@ class DailyProtocol02API: ProtocolHandlerUtil {
             }
         }
     }
+    
+    /// Reset byte array - Android 로직과 동일하게 구현
+        func resetByteArray() {
+            clearDaily02ByteArray()
+            preByte = 0x00
+            print("[DailyProtocol02API] Byte array 초기화 완료")
+        }
 }

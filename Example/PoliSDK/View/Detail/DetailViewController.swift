@@ -79,7 +79,7 @@ class DetailViewController: UIViewController {
                         print("Subscription state: \(state)")
                     },
 
-                    onReceiveSubscribtionData: { type, data in
+                    onReceiveSubscriptionData: { type, data in
                         print("protocol type: \(type)")
                         print("onReceive Data: \(String(describing: data))")
 
