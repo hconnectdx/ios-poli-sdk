@@ -153,6 +153,10 @@ public class PoliBLE {
         HCBle.shared.setReadChar(uuid: uuid, characteristic: characteristic)
     }
     
+    public func setWriteChar(uuid: UUID, characteristic: CBCharacteristic) {
+        HCBle.shared.setWriteChar(uuid: uuid, characteristic: characteristic)
+    }
+    
     public func setTargetReadChar(uuid: UUID, characteristicUUID: String) {
         print("[\(Self.TAG)] Read 특성 UUID 설정: \(characteristicUUID)")
         HCBle.shared.setTargetReadChar(uuid: uuid, characteristicUUID: characteristicUUID)
